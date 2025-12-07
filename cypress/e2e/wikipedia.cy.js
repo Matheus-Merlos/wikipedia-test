@@ -1,14 +1,17 @@
 describe('Cenários de teste da Wikipedia', () => {
     beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearCookies();
         cy.viewport(1920, 1080) 
         cy.visit('https://pt.wikipedia.org/')
+        cy.reload(true);
 
         cy.get('#searchInput', { timeout: 10000 }).should('be.visible')
     })
 
     it('WIKI-01 - Busca por texto usando o campo principal + Enter', () => {
         cy.get('#searchInput').type("Brasil", { delay: 100 })
-        cy.get('#searchInput').type('{enter}', { force: true })
+        cy.get('#searchInput').type('{enter}')
 
         cy.url().should('include', '/wiki/Brasil')
         cy.get('#firstHeading').should('have.text', 'Brasil')
@@ -55,7 +58,7 @@ describe('Cenários de teste da Wikipedia', () => {
 
     it('WIKI-06 - Mudança de idioma para Inglês', () => {
         cy.get('#searchInput').type("Brasil", { delay: 100 })
-        cy.get('#searchInput').type('{enter}', { force: true })
+        cy.get('.cdx-menu-item').first().click()
         cy.get('#p-lang-btn-checkbox').click()
         cy.contains("English").click()
 
@@ -64,7 +67,7 @@ describe('Cenários de teste da Wikipedia', () => {
 
     it('WIKI-07 - Mudança de idioma para Espanhol', () => {
         cy.get('#searchInput').type("Brasil", { delay: 100 })
-        cy.get('#searchInput').type('{enter}', { force: true })
+        cy.get('.cdx-menu-item').first().click()
         cy.get('#p-lang-btn-checkbox').click()
         cy.contains("Español").click()
 
@@ -85,7 +88,7 @@ describe('Cenários de teste da Wikipedia', () => {
 
     it('WIKI-10 - Navegação entre abas Artigo → Discussão', () => {
         cy.get('#searchInput').type("Cavalo", { delay: 100 })
-        cy.get('#searchInput').type('{enter}', { force: true })
+        cy.get('.cdx-menu-item').first().click()
         cy.contains('Discussão').click()
 
         cy.url().should('include', '/wiki/Discuss%C3%A3o:Cavalo')
@@ -94,7 +97,7 @@ describe('Cenários de teste da Wikipedia', () => {
 
     it('WIKI-11 - Navegação entre abas Discussão → Artigo', () => {
         cy.get('#searchInput').type("Cavalo", { delay: 100 })
-        cy.get('#searchInput').type('{enter}', { force: true })
+        cy.get('.cdx-menu-item').first().click()
         cy.contains('Discussão').click()
         cy.contains('Artigo').click()
 
